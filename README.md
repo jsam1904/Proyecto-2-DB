@@ -15,9 +15,9 @@ Proyecto-2-DB/
 ├── db/
 │   └── schema.sql          # Esquema de BD y datos de ejemplo
 ├── docs/
-│   └── Proyecto 2.docx     # Documentación del proyecto
-├── backend/                # (pendiente)
-├── frontend/               # (pendiente)
+│   ├── Proyecto 2.docx     # Documentación del proyecto
+│   └── Proyecto 2.pdf      # Informe del proyecto (PDF)
+├── .gitignore
 ├── docker-compose.example.yml
 └── docker-compose.yml
 ```
@@ -44,7 +44,6 @@ El esquema sigue la **Tercera Forma Normal (3FN)** y cuenta con 7 tablas:
 - `CASCADE DELETE` en `detalle_venta`
 - Restricciones `CHECK` en precios y cantidades
 - Columna generada (`subtotal = cantidad × precio_unitario`)
-- 7 índices de rendimiento en columnas frecuentemente consultadas
 
 ## Configuración e Instalación
 
