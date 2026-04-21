@@ -6,8 +6,8 @@ services:
     container_name: ventas_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER:     ventas_user
-      POSTGRES_PASSWORD: ventas_pass
+      POSTGRES_USER:    proy2
+      POSTGRES_PASSWORD: secret
       POSTGRES_DB:       ventas_db
     ports:
       - "5432:5432"
@@ -15,7 +15,7 @@ services:
       # Persistencia de datos
       - postgres_data:/var/lib/postgresql/data
       # Script de inicialización (se ejecuta solo la primera vez)
-      - ./schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ventas_user -d ventas_db"]
       interval: 10s
@@ -32,7 +32,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      PGADMIN_DEFAULT_EMAIL:    admin@ventas.local
+      PGADMIN_DEFAULT_EMAIL:    admin@ventas.com
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
