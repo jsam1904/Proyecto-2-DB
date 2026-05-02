@@ -4,38 +4,84 @@ Sistema web para gestionar inventario y ventas de una tienda. Stack: **React + N
 
 ---
 
-## ⚡ Levantar el proyecto
+## Levantar el proyecto
 
 ```bash
 # 1. Clonar el repositorio
 git clone <repo-url>
-cd tienda-project
+cd Proyecto-2-DB
 
 # 2. Copiar variables de entorno
 cp .env.example .env
 
 # 3. Levantar todo
-docker compose up
+docker compose up -d
 ```
+
+Si el comando anterior falla con `container tienda_db is unhealthy`, espera unos segundos y corre:
+
+```bash
+docker compose up -d backend frontend
+```
+
+Esto ocurre porque PostgreSQL necesita un momento para recuperarse en el primer arranque. El `start_period: 30s` del healthcheck lo maneja automáticamente en la mayoría de los casos.
 
 La app estará disponible en:
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:4000/api
 - **PostgreSQL:** localhost:5432
 
-**Credenciales de BD:** usuario `proy2` / contraseña `secret`
+Para detener el proyecto limpiamente (evita el problema de arranque):
 
-**Login:** usuario `dmorales` / contraseña `Password123!` (rol: admin)
+```bash
+docker compose stop    # detiene sin borrar contenedores
+docker compose start   # reanuda sin necesidad de recuperación
+```
 
 ---
 
-## 🏗️ Arquitectura
+## Credenciales
+
+### Base de datos
+
+| Campo    | Valor                                 |
+|----------|---------------------------------------|
+| Usuario  | `proy2`                               |
+| Password | `secret`                              |
+| Base     | `tienda_db`                           |
+| Host     | `localhost` / `db` (dentro de Docker) |
+
+### Usuarios de la aplicación
+
+Todos los usuarios comparten la contraseña: **`Password123!`**
+
+| Usuario      | Rol        |
+|--------------|------------|
+| `dmorales`   | admin      |
+| `ifuentes`   | bodeguero  |
+| `laguilar`   | bodeguero  |
+| `pestrada`   | bodeguero  |
+| `fruiz`      | vendedor   |
+| `hvasquez`   | vendedor   |
+| `jmendez`    | vendedor   |
+| `ksolis`     | vendedor   |
+| `mbarrios`   | vendedor   |
+| `ncruz`      | vendedor   |
+| `odominguez` | vendedor   |
+| `rflores`    | vendedor   |
+| `sgarcia`    | vendedor   |
+| `thernandez` | vendedor   |
+| `uibanez`    | vendedor   |
+
+---
+
+## Arquitectura
 
 ```
-tienda-project/
+Proyecto-2-DB/
 ├── docker-compose.yml
 ├── .env / .env.example
-├── database/
+├── db/
 │   ├── 01_schema.sql     # DDL: tablas, índices, views
 │   └── 02_seed.sql       # Datos de prueba (25+ por tabla)
 ├── backend/              # Node.js + Express
@@ -57,7 +103,7 @@ tienda-project/
 
 ---
 
-## 🗃️ Diseño de base de datos
+## Diseño de base de datos
 
 ### Entidades principales
 
@@ -97,33 +143,3 @@ detalle_compras(id_detalle PK, id_compra FK, id_producto FK, cantidad, precio_un
 **2FN:** En `detalle_ventas`, todos los atributos (`cantidad`, `precio_unitario`, `subtotal`) dependen de la PK compuesta `(id_venta, id_producto)` completa. No hay dependencias parciales.
 
 **3FN:** No existen dependencias transitivas. Por ejemplo, en `productos` el nombre del proveedor no está guardado directamente; se accede via FK `id_proveedor → proveedores`. Lo mismo para categorías.
-
----
-
-## ✅ Rúbrica cubierta
-
-### I. Diseño de base de datos (40 pts)
-- [x] Diagrama ER: entidades, atributos, relaciones, cardinalidades
-- [x] Modelo relacional documentado
-- [x] Normalización 3FN justificada
-- [x] DDL con PRIMARY KEY, FOREIGN KEY, NOT NULL, CHECK constraints
-- [x] Datos de prueba realistas 25+ registros por tabla
-- [x] Índices en 5 columnas justificadas
-
-### II. SQL (50 pts)
-- [x] 3 consultas JOIN múltiple (ventas, productos, reportes — visibles en UI)
-- [x] 2 subqueries: `EXISTS` en bajo-stock, `NOT IN` en productos-sin-venta
-- [x] GROUP BY + HAVING + agregaciones (reporte por empleado, por categoría)
-- [x] CTE con `WITH` (top clientes con RANK, resumen mensual)
-- [x] VIEW usado por backend (`v_ventas_detalle`, `v_top_productos`)
-- [x] Transacción explícita BEGIN/COMMIT/ROLLBACK en registro de ventas
-
-### III. Aplicación web (35 pts)
-- [x] CRUD completo: Productos, Clientes, Empleados
-- [x] Reportes visibles en UI con datos reales
-- [x] Manejo de errores con mensajes al usuario
-- [x] README funcional con docker compose up
-
-### IV. Avanzado (15 pts)
-- [x] Autenticación JWT (login/logout con sesión)
-- [x] Exportar reportes a CSV desde la UI
