@@ -1,2 +1,7 @@
-docker-compose.yml
+node_modules/
+dist/
 .env
+*.log
+.DS_Store
+postgres_data/
+docker-compose.yml

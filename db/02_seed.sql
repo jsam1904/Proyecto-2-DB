@@ -58,21 +58,21 @@ INSERT INTO empleados (nombre, apellido, email, telefono, cargo, salario, fecha_
 -- Contraseñas hasheadas con bcrypt (todas: "Password123!")
 -- ============================================================
 INSERT INTO usuarios (id_empleado, username, password_hash, rol) VALUES
-(1,  'dmorales',    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'admin'),
-(2,  'fruiz',       '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(3,  'hvasquez',    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(4,  'ifuentes',    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'bodeguero'),
-(5,  'jmendez',     '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(6,  'ksolis',      '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(7,  'laguilar',    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'bodeguero'),
-(8,  'mbarrios',    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(9,  'ncruz',       '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(10, 'odominguez',  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(11, 'pestrada',    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'bodeguero'),
-(12, 'rflores',     '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(13, 'sgarcia',     '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(14, 'thernandez',  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor'),
-(15, 'uibanez',     '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh8y', 'vendedor');
+(1,  'dmorales',    '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'admin'),
+(2,  'fruiz',       '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(3,  'hvasquez',    '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(4,  'ifuentes',    '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'bodeguero'),
+(5,  'jmendez',     '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(6,  'ksolis',      '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(7,  'laguilar',    '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'bodeguero'),
+(8,  'mbarrios',    '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(9,  'ncruz',       '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(10, 'odominguez',  '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(11, 'pestrada',    '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'bodeguero'),
+(12, 'rflores',     '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(13, 'sgarcia',     '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(14, 'thernandez',  '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor'),
+(15, 'uibanez',     '$2b$10$nO7iPp7Fxn8vKOlnvyMiveSjL66gilvmXYOKURyfgTtyhe533EiCu', 'vendedor');
 
 -- ============================================================
 -- CLIENTES (30 registros)

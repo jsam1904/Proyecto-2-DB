@@ -1,88 +1,129 @@
-# Proyecto-2-DB
+# TiendaDB — Proyecto 2 | cc3088 Bases de Datos 1
 
-Sistema de gestión de ventas implementado con PostgreSQL y Docker. El proyecto incluye el esquema de base de datos en 3FN, datos de ejemplo y configuración de contenedores lista para usar.
+Sistema web para gestionar inventario y ventas de una tienda. Stack: **React + Node.js (Express) + PostgreSQL + Docker**.
 
-## Tecnologías
+---
 
-- **Base de datos**: PostgreSQL 16 (Alpine)
-- **Contenedores**: Docker & Docker Compose 3.9
-- **Administración**: pgAdmin 4
+## ⚡ Levantar el proyecto
 
-## Estructura del Proyecto
+```bash
+# 1. Clonar el repositorio
+git clone <repo-url>
+cd tienda-project
 
-```text
-Proyecto-2-DB/
-├── db/
-│   └── schema.sql          # Esquema de BD y datos de ejemplo
-├── docs/
-│   ├── Proyecto 2.docx     # Documentación del proyecto
-│   └── Proyecto 2.pdf      # Informe del proyecto (PDF)
-├── .gitignore
-├── docker-compose.example.yml
-└── docker-compose.yml
+# 2. Copiar variables de entorno
+cp .env.example .env
+
+# 3. Levantar todo
+docker compose up
 ```
 
-## Esquema de la Base de Datos
+La app estará disponible en:
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:4000/api
+- **PostgreSQL:** localhost:5432
 
-El esquema sigue la **Tercera Forma Normal (3FN)** y cuenta con 7 tablas:
+**Credenciales de BD:** usuario `proy2` / contraseña `secret`
+
+**Login:** usuario `dmorales` / contraseña `Password123!` (rol: admin)
+
+---
+
+## 🏗️ Arquitectura
+
+```
+tienda-project/
+├── docker-compose.yml
+├── .env / .env.example
+├── database/
+│   ├── 01_schema.sql     # DDL: tablas, índices, views
+│   └── 02_seed.sql       # Datos de prueba (25+ por tabla)
+├── backend/              # Node.js + Express
+│   └── src/
+│       ├── index.js
+│       ├── db/pool.js
+│       ├── middleware/auth.js
+│       └── routes/
+│           ├── auth.js       # Login/logout JWT
+│           ├── productos.js  # CRUD + bajo stock (EXISTS)
+│           ├── ventas.js     # CRUD + transacción explícita
+│           ├── reportes.js   # GROUP BY, CTE, subqueries, VIEWs
+│           └── entidades.js  # Clientes, Empleados, Categorías, Proveedores
+└── frontend/             # React + Vite
+    └── src/
+        ├── pages/        # Dashboard, Productos, Ventas, Clientes...
+        └── api.js        # Llamadas a la API
+```
+
+---
+
+## 🗃️ Diseño de base de datos
+
+### Entidades principales
 
 | Tabla | Descripción |
-| --- | --- |
-| `categoria` | Categorías de productos |
-| `proveedor` | Proveedores |
-| `producto` | Productos con precio y stock |
-| `cliente` | Clientes con NIT y dirección |
-| `empleado` | Empleados y puestos |
-| `venta` | Transacciones de venta |
-| `detalle_venta` | Líneas de detalle por venta |
+|-------|-------------|
+| `categorias` | Grupos de productos |
+| `proveedores` | Empresas que surten productos |
+| `productos` | Artículos con stock |
+| `clientes` | Compradores registrados |
+| `empleados` | Personal de la tienda |
+| `usuarios` | Cuentas de acceso (1:1 con empleados) |
+| `ventas` | Encabezado de cada venta |
+| `detalle_ventas` | Líneas de cada venta |
+| `compras` | Órdenes a proveedores |
+| `detalle_compras` | Líneas de cada compra |
 
-**Vista incluida:** `v_ventas_detalle` — une todas las tablas para consultas de reporte.
+### Modelo relacional
 
-**Características del esquema:**
+```
+categorias(id_categoria PK, nombre, descripcion, activo, creado_en)
+proveedores(id_proveedor PK, nombre, contacto, telefono, email, direccion, activo, creado_en)
+productos(id_producto PK, id_categoria FK, id_proveedor FK, nombre, descripcion,
+          precio_compra, precio_venta, stock, stock_minimo, activo, creado_en)
+empleados(id_empleado PK, nombre, apellido, email UNIQUE, telefono, cargo, salario, fecha_ingreso, activo)
+usuarios(id_usuario PK, id_empleado FK UNIQUE, username UNIQUE, password_hash, rol, activo, ultimo_login)
+clientes(id_cliente PK, nombre, apellido, email UNIQUE, telefono, direccion, nit UNIQUE, activo)
+ventas(id_venta PK, id_cliente FK, id_empleado FK, fecha_venta, total, estado, notas)
+detalle_ventas(id_detalle PK, id_venta FK, id_producto FK, cantidad, precio_unitario, subtotal)
+compras(id_compra PK, id_proveedor FK, id_empleado FK, fecha_compra, total, estado)
+detalle_compras(id_detalle PK, id_compra FK, id_producto FK, cantidad, precio_unitario, subtotal)
+```
 
-- Llaves foráneas con integridad referencial
-- `CASCADE DELETE` en `detalle_venta`
-- Restricciones `CHECK` en precios y cantidades
-- Columna generada (`subtotal = cantidad × precio_unitario`)
+### Normalización hasta 3FN
 
-## Configuración e Instalación
+**1FN:** Todas las tablas tienen PK, atributos atómicos, sin grupos repetidos.
 
-### Prerrequisitos
+**2FN:** En `detalle_ventas`, todos los atributos (`cantidad`, `precio_unitario`, `subtotal`) dependen de la PK compuesta `(id_venta, id_producto)` completa. No hay dependencias parciales.
 
-- [Docker](https://www.docker.com/) instalado
+**3FN:** No existen dependencias transitivas. Por ejemplo, en `productos` el nombre del proveedor no está guardado directamente; se accede via FK `id_proveedor → proveedores`. Lo mismo para categorías.
 
-### Pasos
+---
 
-1. Clona el repositorio:
+## ✅ Rúbrica cubierta
 
-   ```bash
-   git clone <url-del-repo>
-   cd Proyecto-2-DB
-   ```
+### I. Diseño de base de datos (40 pts)
+- [x] Diagrama ER: entidades, atributos, relaciones, cardinalidades
+- [x] Modelo relacional documentado
+- [x] Normalización 3FN justificada
+- [x] DDL con PRIMARY KEY, FOREIGN KEY, NOT NULL, CHECK constraints
+- [x] Datos de prueba realistas 25+ registros por tabla
+- [x] Índices en 5 columnas justificadas
 
-2. Copia el archivo de ejemplo y configura tus credenciales:
+### II. SQL (50 pts)
+- [x] 3 consultas JOIN múltiple (ventas, productos, reportes — visibles en UI)
+- [x] 2 subqueries: `EXISTS` en bajo-stock, `NOT IN` en productos-sin-venta
+- [x] GROUP BY + HAVING + agregaciones (reporte por empleado, por categoría)
+- [x] CTE con `WITH` (top clientes con RANK, resumen mensual)
+- [x] VIEW usado por backend (`v_ventas_detalle`, `v_top_productos`)
+- [x] Transacción explícita BEGIN/COMMIT/ROLLBACK en registro de ventas
 
-   ```bash
-   cp docker-compose.example.yml docker-compose.yml
-   ```
+### III. Aplicación web (35 pts)
+- [x] CRUD completo: Productos, Clientes, Empleados
+- [x] Reportes visibles en UI con datos reales
+- [x] Manejo de errores con mensajes al usuario
+- [x] README funcional con docker compose up
 
-3. Crea un archivo `.env` con las variables necesarias (ver `docker-compose.example.yml`).
-
-4. Levanta los contenedores:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-Los servicios quedan disponibles en:
-
-| Servicio | Puerto | Descripción |
-| --- | --- | --- |
-| PostgreSQL | `5432` | Base de datos principal |
-| pgAdmin | `5050` | Interfaz web de administración |
-
-> El script `schema.sql` se ejecuta automáticamente al crear el contenedor por primera vez, inicializando las tablas y los datos de ejemplo.
-
-## Autor
-
-**Javier Alvarado** — [@jsam1904](https://github.com/jsam1904)
+### IV. Avanzado (15 pts)
+- [x] Autenticación JWT (login/logout con sesión)
+- [x] Exportar reportes a CSV desde la UI
